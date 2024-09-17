@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ron's Golf Course Handicap Calculator</title>
+    <title>Golf Course Handicap Calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
@@ -11,15 +11,25 @@
 </head>
 <body>
     <h1 id="appTitle">Golf Course Handicap Calculator</h1>
-    <div id="languageSelector">
-        <label for="language" id="languageLabel">Language:</label>
-        <select id="language" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="nl">Nederlands</option>
-        </select>
+    <div id="settings">
+        <div id="languageSelector">
+            <label for="language" id="languageLabel">Language:</label>
+            <select id="language" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="nl">Nederlands</option>
+            </select>
+        </div>
+        <div id="courseLengthSelector">
+            <label for="courseLength" id="courseLengthLabel">Course Length:</label>
+            <select id="courseLength">
+                <option value="18" selected>18 Holes</option>
+                <option value="9">9 Holes</option>
+            </select>
+        </div>
     </div>
     <div id="app">
+        <!-- Existing input fields -->
         <label for="handicapIndex" id="labelHandicapIndex">Your Handicap Index:</label>
         <input type="number" id="handicapIndex" step="0.1" min="0" required>
         
@@ -35,27 +45,23 @@
         <button onclick="calculateCourseHandicap()" id="calculateButton">Calculate Course Handicap</button>
         
         <h2 id="courseHandicapResult"></h2>
-
-        <!-- Add this after the existing elements in the app div -->
-        <button id="toggleTableButton" onclick="toggleTable()">
-            Display full table
-        </button>
-
-        <div id="handicapTableContainer" style="display: none;">
-            <table id="handicapTable">
-                <thead>
-                    <tr>
-                        <th id="tableHeaderHandicap">Handicap</th>
-                        <th id="tableHeaderStrokes">Strokes</th>
-                    </tr>
-                </thead>
-                <tbody id="handicapTableBody">
-                    <!-- Rows will be generated dynamically -->
-                </tbody>
-            </table>
-        </div>
-
-
+    </div>
+    <!-- Existing toggle button and table for full table display -->
+    <button id="toggleTableButton" onclick="toggleTable()">
+        Display full table
+    </button>
+    <div id="handicapTableContainer" style="display: none;">
+        <table id="handicapTable">
+            <thead>
+                <tr>
+                    <th id="tableHeaderHandicap">Handicap</th>
+                    <th id="tableHeaderStrokes">Strokes</th>
+                </tr>
+            </thead>
+            <tbody id="handicapTableBody">
+                <!-- Rows will be generated dynamically -->
+            </tbody>
+        </table>
     </div>
     <script src="app.js"></script>
     <!-- Register Service Worker -->

@@ -96,6 +96,25 @@ button:hover {
     background-color: #ffeeba;
 }
 
+/* Add styles for the settings section */
+#settings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 500px;
+    margin: auto;
+}
+
+#languageSelector, #courseLengthSelector {
+    display: flex;
+    align-items: center;
+}
+
+#languageSelector label, #courseLengthSelector label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
     body {

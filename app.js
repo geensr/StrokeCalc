@@ -3,6 +3,9 @@ const translations = {
     en: {
         'appTitle': 'Golf Course Handicap Calculator',
         'languageLabel': 'Language:',
+        'courseLengthLabel': 'Course Length:',
+        'holes18': '18 Holes',
+        'holes9': '9 Holes',
         'handicapIndexLabel': 'Your Handicap Index:',
         'slopeRatingLabel': 'Course Slope Rating:',
         'courseRatingLabel': 'Course Rating:',
@@ -22,6 +25,9 @@ const translations = {
     fr: {
         'appTitle': 'Calculateur de Handicap de Parcours de Golf',
         'languageLabel': 'Langue :',
+        'courseLengthLabel': 'Longueur du parcours :',
+        'holes18': '18 Trous',
+        'holes9': '9 Trous',
         'handicapIndexLabel': 'Votre Index de Handicap :',
         'slopeRatingLabel': 'Indice de Difficulté du Parcours :',
         'courseRatingLabel': 'Évaluation du Parcours :',
@@ -41,6 +47,9 @@ const translations = {
     nl: {
         'appTitle': 'Golfbaan Handicap Calculator',
         'languageLabel': 'Taal:',
+        'courseLengthLabel': 'Lengte van de baan:',
+        'holes18': '18 Holes',
+        'holes9': '9 Holes',
         'handicapIndexLabel': 'Uw Handicap Index:',
         'slopeRatingLabel': 'Baan Slope Rating:',
         'courseRatingLabel': 'Course Rating:',
@@ -67,15 +76,20 @@ function changeLanguage(lang) {
     currentLanguage = lang;
     // Update text elements
     document.getElementById('appTitle').innerText = translations[lang]['appTitle'];
+    document.getElementById('languageLabel').innerText = translations[lang]['languageLabel'];
+    document.getElementById('courseLengthLabel').innerText = translations[lang]['courseLengthLabel'];
     document.getElementById('labelHandicapIndex').innerText = translations[lang]['handicapIndexLabel'];
     document.getElementById('labelSlopeRating').innerText = translations[lang]['slopeRatingLabel'];
     document.getElementById('labelCourseRating').innerText = translations[lang]['courseRatingLabel'];
     document.getElementById('labelPar').innerText = translations[lang]['parLabel'];
     document.getElementById('calculateButton').innerText = translations[lang]['calculateButton'];
-    document.getElementById('languageLabel').innerText = translations[lang]['languageLabel'];
     document.getElementById('toggleTableButton').innerText = translations[lang]['displayFullTable'];
     document.getElementById('tableHeaderHandicap').innerText = translations[lang]['tableHeaderHandicap'];
     document.getElementById('tableHeaderStrokes').innerText = translations[lang]['tableHeaderStrokes'];
+    // Update course length options
+    const courseLengthSelect = document.getElementById('courseLength');
+    courseLengthSelect.options[0].text = translations[lang]['holes18'];
+    courseLengthSelect.options[1].text = translations[lang]['holes9'];
     // Clear the result
     document.getElementById('courseHandicapResult').innerText = '';
 }
@@ -98,9 +112,10 @@ window.onload = function() {
 // Function to calculate Course Handicap with validation
 function calculateCourseHandicap() {
     const handicapIndex = parseFloat(document.getElementById('handicapIndex').value);
-    const slopeRating = parseFloat(document.getElementById('slopeRating').value);
-    const courseRating = parseFloat(document.getElementById('courseRating').value);
+    let slopeRating = parseFloat(document.getElementById('slopeRating').value);
+    let courseRating = parseFloat(document.getElementById('courseRating').value);
     const par = parseInt(document.getElementById('par').value);
+    const courseLength = document.getElementById('courseLength').value;
 
     let errorMessages = [];
 
@@ -127,6 +142,12 @@ function calculateCourseHandicap() {
     if (errorMessages.length > 0) {
         alert(errorMessages.join('\n'));
         return;
+    }
+
+    // Adjust course parameters for 9-hole courses
+    if (courseLength === '9') {
+        slopeRating /= 2;
+        courseRating /= 2;
     }
 
     // WHS Course Handicap formula
@@ -166,19 +187,29 @@ function toggleTable() {
     }
 }
 
+// Function to generate the handicap table
 function generateHandicapTable() {
     const tableBody = document.getElementById('handicapTableBody');
     tableBody.innerHTML = ''; // Clear existing rows
 
     // Retrieve course parameters
-    const slopeRating = parseFloat(document.getElementById('slopeRating').value);
-    const courseRating = parseFloat(document.getElementById('courseRating').value);
+    const slopeRatingInput = parseFloat(document.getElementById('slopeRating').value);
+    const courseRatingInput = parseFloat(document.getElementById('courseRating').value);
     const par = parseInt(document.getElementById('par').value);
+    const courseLength = document.getElementById('courseLength').value;
 
     // Validate course parameters
-    if (isNaN(slopeRating) || isNaN(courseRating) || isNaN(par)) {
+    if (isNaN(slopeRatingInput) || isNaN(courseRatingInput) || isNaN(par)) {
         alert(translations[currentLanguage]['pleaseEnterCourseParameters']);
         return;
+    }
+
+    // Adjust course parameters for 9-hole courses
+    let slopeRating = slopeRatingInput;
+    let courseRating = courseRatingInput;
+    if (courseLength === '9') {
+        slopeRating /= 2;
+        courseRating /= 2;
     }
 
     // Initialize variables for grouping
@@ -248,9 +279,16 @@ function addTableRow(start, end, strokes, userHandicapIndex) {
 // Function to calculate strokes for a given handicap index
 function calculateStrokesForHandicap(handicapIndex) {
     // Retrieve course parameters from the input fields
-    const slopeRating = parseFloat(document.getElementById('slopeRating').value);
-    const courseRating = parseFloat(document.getElementById('courseRating').value);
+    let slopeRating = parseFloat(document.getElementById('slopeRating').value);
+    let courseRating = parseFloat(document.getElementById('courseRating').value);
     const par = parseInt(document.getElementById('par').value);
+    const courseLength = document.getElementById('courseLength').value;
+
+    // Adjust course parameters for 9-hole courses
+    if (courseLength === '9') {
+        slopeRating /= 2;
+        courseRating /= 2;
+    }
 
     // WHS Course Handicap formula
     let courseHandicap = handicapIndex * (slopeRating / 113) + (courseRating - par);
