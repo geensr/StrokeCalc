@@ -166,7 +166,6 @@ function toggleTable() {
     }
 }
 
-// Function to generate the handicap table
 function generateHandicapTable() {
     const tableBody = document.getElementById('handicapTableBody');
     tableBody.innerHTML = ''; // Clear existing rows
@@ -176,45 +175,74 @@ function generateHandicapTable() {
     const courseRating = parseFloat(document.getElementById('courseRating').value);
     const par = parseInt(document.getElementById('par').value);
 
-    // Generate handicap ranges and corresponding strokes
-    let handicapRanges = [];
-    for (let i = 0; i <= 54; i += 0.6) {
-        const start = parseFloat(i.toFixed(1));
-        const end = parseFloat((i + 0.5).toFixed(1));
-
-        // Midpoint of the range for calculation
-        const handicapIndex = parseFloat(((start + end) / 2).toFixed(1));
-
-        const strokes = calculateStrokesForHandicap(handicapIndex);
-
-        handicapRanges.push({
-            range: `${start}-${end}`,
-            strokes: strokes
-        });
+    // Validate course parameters
+    if (isNaN(slopeRating) || isNaN(courseRating) || isNaN(par)) {
+        alert(translations[currentLanguage]['pleaseEnterCourseParameters']);
+        return;
     }
+
+    // Initialize variables for grouping
+    let startHandicap = 0.0;
+    let endHandicap = 0.0;
+    let previousStrokes = null;
 
     // Get user's handicap index to highlight the row
     const userHandicapIndex = parseFloat(document.getElementById('handicapIndex').value);
 
-    handicapRanges.forEach((item) => {
-        const tr = document.createElement('tr');
-        const tdHandicap = document.createElement('td');
-        const tdStrokes = document.createElement('td');
+    // Loop through handicap indices from 0.0 to 36.0 in increments of 0.1
+    for (let i = 0.0; i <= 36.0; i += 0.1) {
+        const handicapIndex = parseFloat(i.toFixed(1));
+        const strokes = calculateStrokesForHandicap(handicapIndex);
 
-        tdHandicap.innerText = item.range;
-        tdStrokes.innerText = item.strokes;
-
-        tr.appendChild(tdHandicap);
-        tr.appendChild(tdStrokes);
-
-        // Check if user's handicap falls within this range
-        const rangeParts = item.range.split('-').map(parseFloat);
-        if (userHandicapIndex >= rangeParts[0] && userHandicapIndex <= rangeParts[1]) {
-            tr.classList.add('highlight');
+        if (previousStrokes === null) {
+            // First iteration
+            previousStrokes = strokes;
+            startHandicap = handicapIndex;
+            endHandicap = handicapIndex;
+        } else if (strokes === previousStrokes) {
+            // Continue the range
+            endHandicap = handicapIndex;
+        } else {
+            // Strokes changed, add the previous range to the table
+            addTableRow(startHandicap, endHandicap, previousStrokes, userHandicapIndex);
+            // Start a new range
+            startHandicap = handicapIndex;
+            endHandicap = handicapIndex;
+            previousStrokes = strokes;
         }
+    }
 
-        tableBody.appendChild(tr);
-    });
+    // Add the final range to the table
+    addTableRow(startHandicap, endHandicap, previousStrokes, userHandicapIndex);
+}
+
+// Helper function to add a row to the table
+function addTableRow(start, end, strokes, userHandicapIndex) {
+    const tableBody = document.getElementById('handicapTableBody');
+    const tr = document.createElement('tr');
+    const tdHandicap = document.createElement('td');
+    const tdStrokes = document.createElement('td');
+
+    // Format the handicap range
+    let rangeText = '';
+    if (start === end) {
+        rangeText = start.toFixed(1);
+    } else {
+        rangeText = `${start.toFixed(1)} - ${end.toFixed(1)}`;
+    }
+
+    tdHandicap.innerText = rangeText;
+    tdStrokes.innerText = strokes;
+
+    tr.appendChild(tdHandicap);
+    tr.appendChild(tdStrokes);
+
+    // Check if user's handicap falls within this range
+    if (userHandicapIndex >= start && userHandicapIndex <= end) {
+        tr.classList.add('highlight');
+    }
+
+    tableBody.appendChild(tr);
 }
 
 // Function to calculate strokes for a given handicap index
