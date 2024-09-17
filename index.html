@@ -35,6 +35,27 @@
         <button onclick="calculateCourseHandicap()" id="calculateButton">Calculate Course Handicap</button>
         
         <h2 id="courseHandicapResult"></h2>
+
+        <!-- Add this after the existing elements in the app div -->
+        <button id="toggleTableButton" onclick="toggleTable()">
+            Display full table
+        </button>
+
+        <div id="handicapTableContainer" style="display: none;">
+            <table id="handicapTable">
+                <thead>
+                    <tr>
+                        <th id="tableHeaderHandicap">Handicap</th>
+                        <th id="tableHeaderStrokes">Strokes</th>
+                    </tr>
+                </thead>
+                <tbody id="handicapTableBody">
+                    <!-- Rows will be generated dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+
     </div>
     <script src="app.js"></script>
     <!-- Register Service Worker -->

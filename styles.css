@@ -47,6 +47,55 @@ button:hover {
     text-align: center;
 }
 
+/* Styles for the toggle button */
+#toggleTableButton {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    background-color: #4CAF50; /* Green color */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#toggleTableButton:hover {
+    background-color: #45a049;
+}
+
+/* Styles for the table */
+#handicapTable {
+    width: auto; /* Adjust width to content */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto;  /* Center the table */
+    margin-right: auto; /* Center the table */
+}
+
+#handicapTableContainer {
+    overflow-x: auto; /* Enable horizontal scrolling if necessary */
+    text-align: center; /* Center the table in the container */
+}
+
+#handicapTable th, #handicapTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center; /* Center align text */
+}
+
+#handicapTable th {
+    background-color: #f2f2f2;
+}
+
+#handicapTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Highlighted row */
+#handicapTable tr.highlight {
+    background-color: #ffeeba;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
     body {
@@ -60,5 +109,22 @@ button:hover {
 
     button {
         font-size: 14px;
+    }
+
+    #toggleTableButton {
+        font-size: 14px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input {
+        font-size: 14px;
+    }
+
+    #handicapTable th, #handicapTable td {
+        font-size: 14px;
+        padding: 6px;
     }
 }
